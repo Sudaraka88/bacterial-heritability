@@ -1,6 +1,6 @@
 # These R packages are needed, run to install if missing...
 list.of.packages <- c("ggplot2", "Rcpp", "gridExtra", "data.table", "foreach", "doParallel", "MASS", "glmnet", "devtools",
-                      "ggtree", "phytools", "DECIPHER", "dplyr", "colorspace", "ggpubr", "ape")
+                      "ggtree", "phytools", "DECIPHER", "dplyr", "colorspace", "ggpubr", "ape", "vcfR")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 
