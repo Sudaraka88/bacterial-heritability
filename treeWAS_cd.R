@@ -1,4 +1,5 @@
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
+# Checked 20210621
 
 ph = "cd"
 

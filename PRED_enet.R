@@ -1,4 +1,6 @@
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
+# Checked 20210621
+
 # This is a combined run with core and accessory genome data 20210430
 library(ggplot2)
 library(lme4qtl)
@@ -8,9 +10,9 @@ library(Rcpp)
 library(MASS)
 library(glmnet)
 library(doParallel)
-sourceCpp("../Genotype2/tableC.cpp")
+sourceCpp("tableC.cpp")
 validation_method_ = c("loso", "xfcv")
-ph_ = c("cd","pen.mic", "cef.mic")#,"cef.mic", "cd")
+ph_ = c("cd","pen.mic", "cef.mic")
 getVariation = function(X){
   u = unique(X)
   if(length(u) == 1) return(0) else return(length(u))
@@ -137,19 +139,19 @@ for(ph in ph_){
     
     print(paste("Now Processing", ph, "with", validation_method))
     if(ph == "cd"){
-      print("Reading phenotype: ../Accessory_Genome/DATASET2/cd_acute_pheno_reduced.rds")
-      pheno = readRDS("../Accessory_Genome/DATASET2/cd_acute_pheno_reduced.rds")
+      print("Reading phenotype: cd_pheno.rds")
+      pheno = readRDS("cd_pheno.rds")
       w_vec = 1/table(pheno$cluster)
       w = rep(0, nrow(pheno))
       for(p in 1:length(w_vec)) w[which(pheno$cluster == names(w_vec)[p])] = unname(w_vec[p])
       
-      print("Reading acc_genes: ../Accessory_Genome/DATASET2/cd_acute_accessory_genome.rds")
-      acc_genes = readRDS("../Accessory_Genome/DATASET2/cd_acute_accessory_genome.rds")
+      print("Reading acc_genes: cd_acc.rds")
+      acc_genes = readRDS("cd_acc.rds")
       # checkAlignment(pheno$sampleID, rownames(acc_genes))
       acc_genes = acc_gene_cleaner(acc_genes)
       
-      print("Reading core_snps: ../Accessory_Genome/DATASET2/Pensar2019/acc_cd.acute_core_mx_NC.rds")
-      core_snps = readRDS("../Accessory_Genome/DATASET2/Pensar2019/acc_cd.acute_core_mx_NC.rds")
+      print("Reading core_snps: cd_core_mx_NC.rds")
+      core_snps = readRDS("cd_core_mx_NC.rds")
       # checkAlignment(pheno$sampleID, rownames(core_snps))
       mxCC = cbind(core_snps, acc_genes)
       rm(core_snps, acc_genes); gc()
@@ -159,16 +161,16 @@ for(ph in ph_){
       pheno_data = data.frame(ids = pheno$sampleID, y = log10(pheno$carriage_duration), carried = pheno$carried, weights = w)
       # formi = create_formula(pheno_data[,-1])$formi
       # keep_idx = readRDS("OUT/keep_cd.rds")
-      print("Reading similarity mx: ../pySEER/DATASET2/phylosim_cdacute.tsv")
-      sim_mx = read.table("../pySEER/DATASET2/phylosim_cdacute.tsv") # These row names/col names need to be modified
+      print("Reading similarity mx: phylosim_cd.tsv")
+      sim_mx = read.table("phylosim_cd.tsv") # These row names/col names need to be modified
     } else if(ph == "cef.mic" | ph == "pen.mic"){
-      pheno = readRDS("../Accessory_Genome/DATASET2/pen.mic_cef.mic_pheno_reduced.rds")
+      pheno = readRDS("mic_pheno.rds")
       
-      acc_genes = readRDS("../Accessory_Genome/DATASET2/pen.mic_cef.mic_accessory_genome.rds")
+      acc_genes = readRDS("mic_acc.rds")
       # checkAlignment(pheno$sampleID, rownames(acc_genes))
       acc_genes = acc_gene_cleaner(acc_genes)
       
-      core_snps = readRDS("../Accessory_Genome/DATASET2/Pensar2019/acc_mic_core_mx_NC.rds")
+      core_snps = readRDS("mic_core_mx_NC.rds")
       # checkAlignment(pheno$sampleID, rownames(core_snps))
       mxCC = cbind(core_snps, acc_genes)
       rm(core_snps, acc_genes); gc()
@@ -176,31 +178,17 @@ for(ph in ph_){
       mxCC = filter_alt(mxCC)
       # Let's make the phenotype table
       if(ph == "cef.mic") {
-        # fec_cv = readRDS("FECs_cef.mic.rds")
-        # shape_snps = as.numeric(colnames(fec_cv))
-        # colnames(fec_cv) = paste("f_", colnames(fec_cv), sep = "")
         pheno_data = data.frame(ids = pheno$sampleID, y = log10(pheno$Ceftriaxone.MIC), acute = as.numeric(pheno$acute=="No"), 
                                 cat = as.numeric(pheno$category=="Infant")) 
-        # keep_idx = readRDS("OUT/keep_cef.mic.rds")
-        # lab_pos = list(nocov = c(-2,-6,-10,-14,-18,-2,-6,-10,-14,-2,-2,-2),
-        #                fecov = c(-2,-2, -2))
       } else if(ph == "pen.mic") {
-        # fec_cv = readRDS("FECs_pen.mic.rds")
-        # shape_snps = as.numeric(colnames(fec_cv))
-        # colnames(fec_cv) = paste("f_", colnames(fec_cv), sep = "")
         pheno_data = data.frame(ids = pheno$sampleID, y = log10(pheno$Penicillin.MIC), acute = as.numeric(pheno$acute=="No"), 
                                 cat = as.numeric(pheno$category=="Infant"))
-        # keep_idx = readRDS("OUT/keep_pen.mic.rds")
-        # lab_pos = list(nocov = c(-2,-6,-10, -14, -2,-6,-10, -14),
-        #                fecov = c(-2, -2))
       }
-      # formi = list(nocov = create_formula(pheno_data[,-1], type = "nocov")$formi,
-      #              allcov = create_formula(pheno_data[,-1], type = "all_cov")$formi)
-      
-      print("Reading similarity mx: ../pySEER/DATASET2/phylosim_mic.tsv")
-      sim_mx = read.table("../pySEER/DATASET2/phylosim_mic.tsv") # These row names/col names need to be modified
+
+      print("Reading similarity mx: phylosim_mic.tsv")
+      sim_mx = read.table("phylosim_mic.tsv") # These row names/col names need to be modified
     }
-    # # Let's introduce a clumping pipeline here
+  
     outpath = "OUT"; if(!file.exists(outpath)) dir.create(outpath) # Outputs
     
     if(file.exists(file.path("OUT", paste(ph, "_passoc_gls.rds", sep = "")))){
@@ -212,25 +200,13 @@ for(ph in ph_){
                                formi = formi, pheno_data = pheno_data, sim_mx = sim_mx, mxCC = mxCC)
       passoc_gls = gwas_out$passoc_gls
     }
-    # 
-    # snporder = order(-log10(passoc_gls$tab$pval), decreasing = T)
-    # keep_idx = snporder[1:round(0.75*length(snporder))]
-    # 
+    
     if(file.exists(paste("OUT/keep_", ph, ".rds", sep = ""))){
       keep_idx = readRDS(paste("OUT/keep_", ph, ".rds", sep = ""))
     } else {
       keep_idx = subset_snps(passoc_gls, mxCC, cor_thresh = 0.5, retain_thresh = 0.75) # This is very slow!
     }
     
-    
-    # t_temp = Sys.time()
-    # for (i in 0:20) {
-    #   assign(paste("fit", i, sep=""), cv.glmnet(mxCC, pheno_data$y, type.measure="mse", 
-    #                                             alpha=i/100,family="gaussian", parallel = T))
-    #   print(paste(i, "done, T = ", Sys.time() - t_temp))
-    # }
-    
-    #   plotpath = "PLOTS"; if(!file.exists(plotpath)) dir.create(plotpath) # Plots
     if(validation_method == "xfcv"){
       print("Commencing xfcv")
       # Code for 10-fold cross validation
@@ -267,32 +243,22 @@ for(ph in ph_){
       }
     }
     print(paste("Check for correct training/testing sets passed?", all(sort(unlist(testing_idx_)) == seq(1:nrow(pheno)))))
-    #   
-    #   layout_mx = rbind(c(3,3),c(1,2)) # This is for arrangegrob
-    #   
+
     xxx = 1 # counter
     op = list()
     for(testing_idx in testing_idx_){
       t_val_step = Sys.time()
-      # if(!file.exists(file.path(outpath, paste(ph, "_", validation_method, "_s_", xxx, sep = "")))){
       print(paste("Working on step", xxx))
-      # tp = 0.5 # training portion
+
       tp = length(testing_idx)/nrow(pheno)
       training_idx = seq(1, nrow(pheno))
-      # training_idx = sort(sample(nrow(pheno), round(nrow(pheno)*tp)))
+
       training_idx = training_idx[-testing_idx]
-      # pheno_train = pheno[training_idx,]
+     
       # We should do a re-filtering of the training SNPs, we can't predict using unseen data!
       mxCC_train = mxCC[training_idx,keep_idx]
       
-      # mxCC_train = filter_alt(mxCC_train)   # Filtering Pipeline
-      # n_acc_ = length(grep("group", colnames(mxCC_train)))
-      # n_core_ = ncol(mxCC_train) - n_acc_
-      # print(paste("After filtering, nSEQ = ", nrow(mxCC_train), ", nSNP_core = ", n_core_, ", nGenes_acc = ", n_acc_, " in training dataset", sep = ""))
-      
-      # t = Sys.time()
-      # print(paste("Initiating GLS pipelines at", t))
-      
+   
       pheno_data_train = pheno_data[training_idx, ]
       pheno_data_test = pheno_data[testing_idx, ]
       # 10 fold CV using glmnet
@@ -309,77 +275,7 @@ for(ph in ph_){
         saveRDS(save_op, file.path(outpath, paste(ph, "_", validation_method, "_a_",alpha, "_enet_", xxx, sep = "")))
         print(paste(validation_method,"step=", xxx,"for ph",ph,", alpha=",alpha,"mse=",save_op$mse,"cor=",save_op$cor,"N=",save_op$N))
         rm(glmnet_cv)
-      }
-      
-      # plot(preds~pheno_data_test$y)
-      
-      # plot(fit.cv.glmnet)
-      
-      # best_idx = which(fit.cv.glmnet$lambda == fit.cv.glmnet$lambda.min)
-      # print(paste(ph, ": MSE: ", fit.cv.glmnet$cvm[best_idx], 
-      #             "SD: ", fit.cv.glmnet$cvsd[best_idx],
-      #             "n_preds:", fit.cv.glmnet$nzero[best_idx]))
-      
-      # sim_mx_train = sim_mx_cleaner(sim_mx, pheno_data_train$ids)
-      
-      # mod <- relmatLmer(y ~ (1|ids), pheno_data_train, relmat = list(ids = sim_mx_train))
-      # print(VarProp(mod))
-      # V <- varcov(mod, idvar = "ids")
-      # # Matrix::image(V[1:20, 1:20], main = "Estimated V (with artifacts)") # some artifacts close to zero due to limited numeric precision
-      # # Matrix::image(V_thr[1:20, 1:20], main = "Estimated V (with artifacts removed)")
-      # decomp <- decompose_varcov(V, method = "evd", output = "all")
-      # W <- decomp$transform
-      
-      
-      # analysis = "nocov"
-      # formi_nocov = create_formula(pheno_data_train[,-1], analysis) # first column is ids
-      # 
-      # train_nocov = trainer(formi_nocov, mxCC_train, W)
-      # predict_nocov = predictor(train_nocov$keep, formi_nocov$pheno_data, create_formula(pheno_data_test[,-1])$pheno_data, training_idx, testing_idx, mxCC, W)
-      # 
-      # predplt_nocov = mkplt_pred(formi_nocov$pheno_data, create_formula(pheno_data_test[,-1], analysis)$pheno_data, predict_nocov, tp)
-      # gwas_nocov = mkplt_gwas(passoc_gls =train_nocov$passoc_gls, pheno_type = ph, sim_mx_type = paste("pred:", length(train_nocov$keep), "of", ncol(mxCC_train), "SNPs used"),
-      #                         lab_pos = NULL,  shape_snps =   colnames(mxCC_train)[train_nocov$keep])
-      # gwas_nocov
-      # nocov_out = list(formi = formi_nocov, train = train_nocov, predict = predict_nocov, pred_plt = predplt_nocov, gwas_plot = gwas_nocov)
-      # ggsave(file.path(plotpath, paste(ph, "_nocov_", validation_method, "_s_", xxx, ".png", sep = "")),
-      #        arrangeGrob(predplt_nocov$plt_train, predplt_nocov$plt_test, gwas_nocov, layout_matrix = layout_mx), width = 12)
-      
-      # analysis = "acc_cov" # This is no longer a separate part!
-      # formi_acc_cov = create_formula(pheno_data_train[,-1], analysis) # first column is ids
-      # train_acc_cov = trainer(formi_acc_cov, mxCC_train, W)
-      # predict_acc_cov = predictor(train_acc_cov$keep, formi_acc_cov$pheno_data, create_formula(pheno_data_test[,-1], analysis)$pheno_data, training_idx, testing_idx, mxCC)
-      # predplt_acc_cov = mkplt_pred(formi_acc_cov$pheno_data, create_formula(pheno_data_test[,-1], analysis)$pheno_data, predict_acc_cov, tp)
-      # # predplt_acc_cov$plt_test
-      # gwas_acc_cov = mkplt_gwas(passoc_gls = train_acc_cov$passoc_gls, pheno_type = ph,
-      #                           sim_mx_type =  paste("pred:", length(train_acc_cov$keep), "of", ncol(mxCC_train), "SNPs used"), color_snps = colnames(mxCC_train)[train_acc_cov$keep])
-      # # gwas_acc_cov
-      # acc_cov_out = list(formi = formi_acc_cov, train = train_acc_cov, predict = predict_acc_cov, pred_plt = predplt_acc_cov, gwas_plot = gwas_acc_cov)
-      # ggsave(file.path(plotpath, paste(ph, "_acc_cov_", validation_method, "_s_", xxx, ".png", sep = "")),
-      #        arrangeGrob(predplt_acc_cov$plt_train, predplt_acc_cov$plt_test, gwas_acc_cov, layout_matrix = layout_mx), width = 12)
-      
-      
-      # if(ph == "cef.mic" | ph == "pen.mic") {
-      #   analysis = "all_cov"
-      #   formi_all_cov = create_formula(pheno_data_train[,-1], analysis) # first column is ids
-      #   train_all_cov = trainer(formi_all_cov, mxCC_train, W)
-      #   predict_all_cov = predictor(train_all_cov$keep, formi_all_cov$pheno_data, create_formula(pheno_data_test[,-1], analysis)$pheno_data, training_idx, testing_idx, mxCC, W)
-      #   predplt_all_cov = mkplt_pred(formi_all_cov$pheno_data, create_formula(pheno_data_test[,-1], analysis)$pheno_data, predict_all_cov, tp)
-      #   predplt_all_cov$plt_test
-      #   gwas_all_cov = mkplt_gwas(passoc_gls = train_all_cov$passoc_gls, pheno_type = ph, sim_mx_type =  paste("pred:", length(train_all_cov$keep), "of", ncol(mxCC_train), "SNPs used"),
-      #                             lab_pos = NULL, shape_snps = colnames(mxCC_train)[train_all_cov$keep])
-      #   gwas_all_cov
-      #   full_cov_out = list(formi = formi_all_cov, train = train_all_cov, predict = predict_all_cov, pred_plt = predplt_all_cov, gwas_plot = gwas_all_cov)
-      #   save_op = list(nocov = nocov_out, full_cov = full_cov_out)
-      #   ggsave(file.path(plotpath, paste(ph, "_all_cov_", validation_method, "_s_", xxx, ".png", sep = "")),
-      #          arrangeGrob(predplt_all_cov$plt_train, predplt_all_cov$plt_test, gwas_all_cov, layout_matrix = layout_mx), width = 12)
-      # } else {
-      #   save_op = list(nocov = nocov_out)
-      # }
-      
-      # } else {
-      #   print(paste("File:", file.path(outpath, paste(ph, "_", validation_method, "_s_", xxx, sep = "")),"exists, skipping..."))
-      # }
+
       xxx = xxx + 1
       print(paste("Elapsed time for step:", Sys.time() - t_val_step))
     }

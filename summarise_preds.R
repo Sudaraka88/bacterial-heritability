@@ -1,7 +1,9 @@
 # This code is to summarise prediction results for each phenotype
+if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
+# Checked 20210621
+
 library(ggplot2)
 rm(list=ls())
-if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
 viewop = function(bla, nm = "out") {
   print(paste(nm, ": ", round(mean(bla),3), " (", round(sd(bla),3), "), max:", max(bla), ", min:", min(bla), sep = ""))
 }
@@ -12,7 +14,7 @@ ph_ = c("cd", "cef.mic", "pen.mic") # "cd", "pen.mic"
 method_ = c("loso", "xfcv") # "loso""xfcv"
 
 ## For enet
-fldr = "RUN05/OUT"
+fldr = "OUT"
 a = 0
 
 cnt = 0
@@ -72,26 +74,17 @@ fec = T
 # Read in the pheno data as well
 
 if(ph == "cd"){
-  pheno = readRDS("../Accessory_Genome/DATASET2/cd_acute_pheno_reduced.rds")
+  pheno = readRDS("cd_pheno.rds")
   pheno_data = data.frame(ids = pheno$sampleID, y = log10(pheno$carriage_duration), carried = pheno$carried)
 } else if(ph == "cef.mic"){
-  pheno = readRDS("../Accessory_Genome/DATASET2/pen.mic_cef.mic_pheno_reduced.rds")
+  pheno = readRDS("mic_pheno.rds")
   pheno_data = data.frame(ids = pheno$sampleID, y = log10(pheno$Ceftriaxone.MIC), acute = as.numeric(pheno$acute=="No"),
                           cat = as.numeric(pheno$category=="Infant"))
 } else if(ph == "cef.mic"){
-  pheno = readRDS("../Accessory_Genome/DATASET2/pen.mic_cef.mic_pheno_reduced.rds")
+  pheno = readRDS("mic_pheno.rds")
   pheno_data = data.frame(ids = pheno$sampleID, y = log10(pheno$Penicillin.MIC), acute = as.numeric(pheno$acute=="No"),
                           cat = as.numeric(pheno$category=="Infant"))
 }
-
-### CORRUPTED FILE - MANUALLY REMOVE: COMMENT OUT IF RE-RUN ###
-if(ph == "pen.mic" & method == "loso") files = files[-grep("pen.mic_loso_s_19", files)]
-
-# if(ph == "cd") {
-#   pheno = readRDS("../Clustering/Results/FBCLUSTER_GLS/mapped_pheno_Wclust.rds")
-# } else {
-#   pheno = readRDS("../Clustering/Results/FBCLUSTER_GLS/mapped_pheno_Wclust_MIC.rds")
-# }
 
 mae_test = c()
 mse_test = c()
@@ -104,7 +97,7 @@ n_train = c()
 n_test = c()
 
 for(i in files){
-  op = readRDS(file.path("RUN02/OUT", method, i))
+  op = readRDS(file.path("OUT", method, i))
   if(fec){
     keep = c(keep, length(op$full_cov$train$keep))
     mae_test = c(mae_test, op$full_cov$predict$mae_test)

@@ -1,5 +1,11 @@
 library(data.table)
-gff_data = readRDS("gff_data_cleaned.rds")
+# Checked 20210621
+
+# reference_genome.rds is a reduced version of the SPN23F ref. genome published here: https://journals.asm.org/doi/full/10.1128/JB.01343-08
+# The gff file is available at: https://dx.doi.org/10.6084/m9.figshare.7588832 (via pyseer: https://pyseer.readthedocs.io/en/master/tutorial.html)
+
+# This code quickly matches a snp position to a nearby gene in the reference genome
+gff_data = readRDS("reference_genome.rds") # provided
 gene_data = gff_data[!is.na(gff_data$gene),] # Only mapped genes in this df
 dst = data.table(w = gene_data$start, val = gene_data$start)
 setattr(dst, "sorted", "w")
