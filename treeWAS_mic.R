@@ -1,5 +1,5 @@
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
-
+# Checked 20210621
 args <- commandArgs(TRUE)
 if(length(args) == 0) {
   print("Either phenotype <cef.mic> OR <pen.mic> must be provided")

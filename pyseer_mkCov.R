@@ -1,13 +1,14 @@
 # This file creates the covariate information required for pySEER
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
+# Checked 20210621
 
 refmt = function(nm){
   temp = unlist(strsplit(unlist(strsplit(nm, split = "_S_"))[1], split = "_"))
   return(paste(temp[1], "_", temp[2], "#", temp[3], sep = ""))
 }
 
-# pheno = readRDS("../../Clustering/Results/FBCLUSTER_GLS/mapped_pheno_Wclust_MIC.rds"); fasta_order_seqs = read.table("seqs.mic", as.is = T, comment.char = "") # for MIC
-pheno = readRDS("../../Clustering/Results/FBCLUSTER_GLS/mapped_pheno_Wclust.rds"); fasta_order_seqs = read.table("seqs.cdacute", as.is = T, comment.char = "") # for cd/acute
+# pheno = readRDS("mic_pheno.rds"); fasta_order_seqs = read.table("seqs.mic", as.is = T, comment.char = "") # for MIC
+pheno = readRDS("cd_pheno.rds"); fasta_order_seqs = read.table("seqs.cdacute", as.is = T, comment.char = "") # for cd/acute
 
 fasta_order_fixed_seqs = apply(fasta_order_seqs, 1, refmt)
 idxord = unname(sapply(fasta_order_fixed_seqs, function(x) which(pheno$sampleID %in% x)))

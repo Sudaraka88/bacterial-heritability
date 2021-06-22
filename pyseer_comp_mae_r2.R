@@ -1,12 +1,13 @@
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
 # This code computes mae and r2 for pyseer predictions
+# Checked 20210621
 
-viewop = function(bla, nm = "out") {
-  print(paste(nm, ": ", round(mean(bla),3), " (", round(sd(bla),3), "), max:", max(bla), ", min:", min(bla), sep = ""))
+viewop = function(input, nm = "out") {
+  print(paste(nm, ": ", round(mean(input),3), " (", round(sd(input),3), "), max:", max(input), ", min:", min(input), sep = ""))
 }
 
-fldr = 'LOSO'
-pheno = "cd"
+fldr = 'LOSO' # 'XFCV'
+pheno = "cd" # 'pen.mic', 'cef.mic'
 files = dir(fldr)
 files = files[grep(pheno, files)]
 
