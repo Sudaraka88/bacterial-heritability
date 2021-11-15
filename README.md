@@ -1,6 +1,9 @@
 # Code for Bacterial Heritability 
 
 ## File description
+### Accession Lanes
+- Accession_lanes.csv   - Genotype data
+
 ### Helper Files
 - init.R			- Information on installing the required packages
 - *reference_genome.rds*	- SPN23F reference genome
@@ -25,12 +28,15 @@
 
 ### Analysis
 - gls_GWAS.R			- Perform GWAS on all phenotypes (num-coded)
-- ldsc_h2.R			- Estimate heritability using LDSC model (num-coded)
+- ldsc_h2.R 			- Estimate heritability using LDSC model (num-coded)
 - PRED_enet.R			- Predict phenotype with elastic net model (num-coded)
-- PRED_MLR.R			- Predict phenotype with linear regression (num-coded)
+- PRED_MLR.R			- Predict phenotype with linear regression (num-coded) - less accurate
 - fec_SNPs.R			- Isolate large effect sized SNPs using clumping
 - summarise_preds.R		- Summarise prediction outcomes
 - map2gene.R			- Search for identified gene in the ref. Genome
+- GWAS_gaps             - Run the GAP test using lme4qtl (less accurate)
+- GWAS_snps.R           - Run the SNP test using lme4qtl
+- GWAS_gapsnp_combo.R   - Combine the outputs from gap/snp testing pipeline
 
 ### Phylogeny and Clustering
 - build_trees.sh		- Script for iqtree2 and ClonalFrameML
@@ -47,11 +53,17 @@
 - pyseer_predict.sh		- Script to prepare prediction models for pyseer
 - pyseer_VCF2bialle.R	- Code the VCF file to bi-allelic for pyseer analyses
 - pyseer_com_mae_r2.R	- Summarise prediction outcomes from pyseer
+- pyseer_GAP.sh         - Run the GAP test using pyseer (preferred option)
 
 ### treeWAS
 - treeWAS_cd.R		- perform treeWAS analysis for carriage duration
 - treeWAS_mic.R		- perform treeWAS analysis for MIC phenotypes
 
+### simulations
+- **AssociationTesting**    - Codes used for the association testing simulation (detailed versions available in **Analysis**)
+- **
 
+### figures
+All paper figures in high quality format
 
 
