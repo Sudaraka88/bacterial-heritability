@@ -1,0 +1,67 @@
+debuggroup summary 0.12s welcome to circos v0.69-8 15 Jun 2019 on Perl 5.030000
+debuggroup summary 0.13s current working directory /mnt/5b763971-c1bf-48c1-961d-f2cee4492e43/Cloudstor/Research/Bacteria/CreateCircularGenome
+debuggroup summary 0.13s command circos-0.69-9/bin/circos -conf circos.conf
+debuggroup summary 0.13s loading configuration from file circos.conf
+debuggroup summary 0.13s found conf file circos.conf
+debuggroup summary 0.21s debug will appear for these features: output,summary
+debuggroup summary 0.21s bitmap output image /mnt/5b763971-c1bf-48c1-961d-f2cee4492e43/Cloudstor/Research/Bacteria/CreateCircularGenome/circos-tutorial.png
+debuggroup summary 0.21s SVG output image /mnt/5b763971-c1bf-48c1-961d-f2cee4492e43/Cloudstor/Research/Bacteria/CreateCircularGenome/circos-tutorial.svg
+debuggroup summary 0.21s parsing karyotype and organizing ideograms
+debuggroup summary 0.21s karyotype has 1 chromosomes of total size 2,221,316
+debuggroup summary 0.21s applying global and local scaling
+debuggroup summary 0.21s allocating image, colors and brushes
+debuggroup summary 1.79s drawing 1 ideograms of total size 2,221,316
+debuggroup summary 1.79s drawing highlights and ideograms
+debuggroup summary 1.84s found conf file etc/tracks/histogram.conf
+debuggroup summary 1.85s found conf file etc/tracks/histogram.conf
+debuggroup summary 1.85s found conf file etc/tracks/heatmap.conf
+debuggroup summary 1.85s found conf file etc/tracks/heatmap.conf
+debuggroup summary 1.85s found conf file etc/tracks/heatmap.conf
+debuggroup summary 1.85s processing track_0 histogram /mnt/5b763971-c1bf-48c1-961d-f2cee4492e43/Cloudstor/Research/Bacteria/CreateCircularGenome/data/karyotype/gaps.pneumo.txt
+debuggroup summary 3.42s processing track_1 histogram /mnt/5b763971-c1bf-48c1-961d-f2cee4492e43/Cloudstor/Research/Bacteria/CreateCircularGenome/data/karyotype/maf.pneumo.txt
+debuggroup summary 5.00s processing track_2 heatmap /mnt/5b763971-c1bf-48c1-961d-f2cee4492e43/Cloudstor/Research/Bacteria/CreateCircularGenome/data/karyotype/genes.pneumo.txt
+debuggroup summary 5.16s processing track_3 heatmap /mnt/5b763971-c1bf-48c1-961d-f2cee4492e43/Cloudstor/Research/Bacteria/CreateCircularGenome/data/karyotype/snps.pneumo_cefmic.txt
+debuggroup summary 5.39s processing track_4 heatmap /mnt/5b763971-c1bf-48c1-961d-f2cee4492e43/Cloudstor/Research/Bacteria/CreateCircularGenome/data/karyotype/snps.pneumo_penmic.txt
+debuggroup summary 5.58s drawing track_0 histogram z 0 gaps.pneumo.txt orient out
+debuggroup summary 5.91s found conf file etc/tracks/axis.conf
+debuggroup summary 18.48s drawing track_1 histogram z 0 maf.pneumo.txt orient out
+debuggroup summary 18.81s found conf file etc/tracks/axis.conf
+debuggroup summary 30.84s drawing track_2 heatmap z 0 genes.pneumo.txt 
+debuggroup summary 30.88s found conf file etc/tracks/axis.conf
+debuggroup summary 31.44s drawing track_3 heatmap z 0 snps.pneumo_cefmic.txt 
+debuggroup summary 31.50s found conf file etc/tracks/axis.conf
+debuggroup summary 32.28s drawing track_4 heatmap z 0 snps.pneumo_penmic.txt 
+debuggroup summary 32.33s found conf file etc/tracks/axis.conf
+debuggroup output 32.95s generating output
+debuggroup output 33.29s created PNG image /mnt/5b763971-c1bf-48c1-961d-f2cee4492e43/Cloudstor/Research/Bacteria/CreateCircularGenome/circos-tutorial.png (1277 kb)
+debuggroup output 33.32s created SVG image /mnt/5b763971-c1bf-48c1-961d-f2cee4492e43/Cloudstor/Research/Bacteria/CreateCircularGenome/circos-tutorial.svg (16626 kb)
+debuggroup timer 33.32s report circos 33.192 s
+debuggroup timer 33.32s report color 1.506 s
+debuggroup timer 33.32s report colordefinitions 0.362 s
+debuggroup timer 33.32s report colorfetch 0.260 s
+debuggroup timer 33.32s report colorlists 1.093 s
+debuggroup timer 33.32s report colorlookups 0.003 s
+debuggroup timer 33.32s report colortransparency 0.000 s
+debuggroup timer 33.32s report dataparams 2.141 s
+debuggroup timer 33.32s report datarules 0.000 s
+debuggroup timer 33.32s report graphic_png_polygon 4.666 s
+debuggroup timer 33.32s report graphic_slice 14.720 s
+debuggroup timer 33.32s report graphic_slice_polygon_coord 1.441 s
+debuggroup timer 33.32s report graphic_slice_polygon_svg 6.158 s
+debuggroup timer 33.32s report graphic_slice_preprocess 1.574 s
+debuggroup timer 33.32s report highlights 0.000 s
+debuggroup timer 33.32s report ideograms_draw 0.059 s
+debuggroup timer 33.32s report ideograms_processing 0.001 s
+debuggroup timer 33.32s report ideograms_ticks_draw 0.040 s
+debuggroup timer 33.32s report ideograms_zoom 0.001 s
+debuggroup timer 33.32s report io 0.468 s
+debuggroup timer 33.32s report karyotype 0.001 s
+debuggroup timer 33.32s report parameter_seek 2.634 s
+debuggroup timer 33.32s report track_heatmap 1.464 s
+debuggroup timer 33.32s report track_histogram 21.268 s
+debuggroup timer 33.32s report track_preprocess 0.788 s
+debuggroup timer 33.32s report unitconvert 0.001 s
+debuggroup timer 33.32s report unitconvert_decision 0.000 s
+debuggroup timer 33.32s report unitconvert_delegate 0.001 s
+debuggroup timer 33.32s report unitparse 0.003 s
+debuggroup summary,timer 33.32s image took more than 30 s to generate. Component timings are shown above. To always show them, use -debug_group timer. To adjust the time cutoff, change debug_auto_timer_report in etc/housekeeping.conf.
