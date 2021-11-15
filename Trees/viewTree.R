@@ -219,3 +219,30 @@ p11 = maketreeplt_nl(tr_dropped, d11, "Cluster AMR mapped to phylogeny")
 p11
 ggsave("mappedPlots/cluster.pdf")
 
+# Plots for the paper
+# if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
+# Make the tree plot in proper order
+library(ape)
+library(ggtree)
+library(ggplot2)
+library(gridExtra)
+library(phytools)
+
+maketreeplt_nl = function(tr_dropped, d, title){
+  p = ggtree(tr_dropped, layout = "circular", ladderize = T, right = T)
+  if(is.factor(d$ph)){
+    p_ = p %<+% d +
+      geom_tippoint(aes(col = factor(ph)), cex = 0.7) +
+      theme(legend.position = c("right"),
+            legend.title=element_blank()) #+
+    # ggtitle(title)
+  } else {
+    p_ = p %<+% d +
+      geom_tippoint(aes(colour = ph), cex = 0.7)+
+      scale_color_gradientn(colours = colorspace::qualitative_hcl(10)) +
+      theme(legend.position=c("right"),
+            legend.title=element_blank()) #+
+    # ggtitle(title)
+  }
+  return(p_)
+}
