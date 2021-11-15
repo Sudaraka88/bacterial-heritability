@@ -1,4 +1,6 @@
-# Code for Bacterial Heritability 
+# Code, data and figures for bacterial-heritability (https://www.biorxiv.org/content/10.1101/2021.10.04.462983v1)
+
+![Circos](/figures/circ.png)
 
 ## File description
 ### Accession Lanes
