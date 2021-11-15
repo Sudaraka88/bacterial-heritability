@@ -61,7 +61,7 @@
 
 ### simulations
 - **AssociationTesting**    - Codes used for the association testing simulation (detailed versions available in **Analysis**)
-- **
+- **Heritability**          - Codes used for the heritability simulation (detailed versions available in **Analysis**)
 
 ### figures
 All paper figures in high quality format
