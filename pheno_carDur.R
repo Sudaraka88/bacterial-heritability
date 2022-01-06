@@ -1,7 +1,7 @@
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
 # Checked 20210621
 
-# requires paths - Run code to generate paths.Rdata first (PathGenerator.R)
+# requires paths - Run code to generate paths.Rdata first (pheno_pathGen.R)
 # Read sequence metadata, format and save as Rdata
 library(dplyr)
 library(data.table)
@@ -146,5 +146,5 @@ for(i in 1:dim(carry_output)[1]){
   
 }
 
-write.csv(output, "Out/carriageDuration_datefix.csv", row.names = FALSE)
+write.csv(output, "Out/carriageDuration_datefix.csv", row.names = FALSE) # output saved to Out
   

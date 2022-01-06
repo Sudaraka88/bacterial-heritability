@@ -4,14 +4,33 @@
 ![Circos](/figures/circ.png)
 
 ## Guide for running the code
+This code is prepared to run on Linux based systems, but should be portable to any OS with minimum effort...
+
 ### Preparing the fasta multiple sequence alignment (MSA)
-- Download the genetic data in **Accession_lane.csv** (use [sratoolkit](https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit))
+- Download the read sequence data in **Accession_lane.csv** (use [sratoolkit](https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit))
 - Download and setup [snippy](https://github.com/tseemann/snippy)
 - Prepare the MSA with the [ATCC700669](https://www.ncbi.nlm.nih.gov/assembly/GCA_000026665.1) reference genome
 
 ### Preparing phenotype data
 - Maela swab data from [Chewapreecha et al. 2014](https://www.nature.com/articles/ng.2895) can be obtained from the authours
-    - Use **pheno_AMR.R** to extract 
+    - Use **pheno_AMR.R** to format and save antimicrobial resistance data from raw files
+    - Use **pheno_mic.R** to format and save minimum inhibitory concentration (MIC) data from raw files
+    - First run **pheno_pathGen.R** to generate carriage paths from the raw files (helper functions are available in **fn**)
+    - Then run **pheno_carDur.R** to extract carriage episodes with durations
+    - Then run **pheno_carCount.R** to extract further details about carriage episodes/counts (optional)
+Final outputs will be written to a folder named **Out**, temporary data will be written to **TempData**. 
+- Prepare two text files **cd_isolates** and **mic_isolates**, each containing the subset of isolates linked with each phenotype
+
+### Preparing data for pangenome analysis (optional)
+- Download and setup [panaroo](https://github.com/gtonkinhill/panaroo)
+    - Use the downloaded read sequence data with and the annotated reference genome to prepare a gene presence/absence CSV file in roary format
+
+### Partioning and convering fasta genotype data into rds format
+- Extract the sequences in **cd_isolates** and **mic_isolates** into separate fasta files (use [seqtk subseq](https://github.com/lh3/seqtk))
+For analysis using **R**, it is convenient to convert these MSA fasta files into native **rds** format
+    - Run **geno_extractSNP.R** to filter, extract SNPs and save the resulting matrix as an RDS file
+        - Alternative filtering ethods are available by changing the output folder name
+    - Then run **geno_numCodeSNPs.R** to perform allele frequency coding (AFC) on the previously generated R matrices
 
 ## File description
 ### Accession Lanes

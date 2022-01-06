@@ -4,6 +4,9 @@ if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext
 
 library(data.table)
 library(stringr)
+
+# gene_presence_absence_roary.csv is not provided, it can be generated using panaroo [https://github.com/gtonkinhill/panaroo]
+
 acc_dat = data.frame(fread("gene_presence_absence_roary.csv", select = c(1)))
 
 # Can we identify accessory genome data from this?

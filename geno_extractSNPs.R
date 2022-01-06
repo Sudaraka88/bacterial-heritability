@@ -3,7 +3,7 @@ if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext
 library(Rcpp) # required for C code interfacing
 # This code is used to extract SNPs from fasta files
 fasta_ = "cd_isolates"; pheno = readRDS("pheno_cd.rds") # fasta alignment and phenotype not provided
-fasta_ = "mic_isolates"; pheno = readRDS("pheno_mic.rds") # fasta alignment and phenotype not provided
+# fasta_ = "mic_isolates"; pheno = readRDS("pheno_mic.rds") # fasta alignment and phenotype not provided
 fasta = paste(fasta_,".fasta",sep = "") 
 
 folder = "Method2" # path to output folder

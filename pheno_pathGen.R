@@ -1,5 +1,5 @@
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
-# Checked 20210621
+# Checked 20220105
 
 # Load Packages
 library(dplyr) 
@@ -8,6 +8,8 @@ require(minqa)
 require(data.table)
 library(foreach)
 library(doParallel)
+# Files in RAW folder can be obtained from the authors of Chewapreecha et al. 2014 (https://www.nature.com/articles/ng.2895)
+
 
 # Set Working Directory
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
@@ -113,6 +115,8 @@ stopCluster(cl)
 name_list = as.character()
 for (i in obsSeroList) name_list = c(name_list, paste(i,'M'),paste(i, 'T'),paste(i, 'V'))
 names(modOut_noNT) = name_list
+
+if(!file.exists("TempData")) dir.create("TempData") # Output paths will be saved to a folder named TempData
 saveRDS(modOut_noNT,file="TempData/modOut_noNT.Rdata")
 
  
@@ -153,6 +157,7 @@ for (i in c(obsSeroList,'NT')){
   models[[i]] = modOut_wNT[[paste(i,'M')]]
   tables[[i]] = modOut_wNT[[paste(i,'T')]]
 }
+if(!file.exists("Out")) dir.create("Out") # Output paths will be saved to a folder named Out
 saveRDS(paths,file="Out/paths.Rdata")
 saveRDS(models,file="Out/models.Rdata")
 saveRDS(tables,file="Out/tables.Rdata")

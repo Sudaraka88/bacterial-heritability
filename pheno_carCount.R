@@ -2,7 +2,7 @@ if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext
 # Checked 20210621
 
 # Identify all carriage durations 
-# requires paths - Run code to generate paths.Rdata first (PathGenerator.R)
+# requires paths - Run code to generate paths.Rdata first (pheno_pathGen.R)
 paths = readRDS('Out/paths.Rdata')
 full_sero = c(obsSeroList, 'NT')
 stend = data.frame()

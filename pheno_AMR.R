@@ -10,6 +10,7 @@ require(data.table)
 library(foreach)
 library(doParallel)
 # Try to map lanes to routine and immunology data
+# Files in RAW folder can be obtained from the authors of Chewapreecha et al. 2014 (https://www.nature.com/articles/ng.2895)
 routine_data <- dplyr::as_tibble(read.csv("RAW/20151026_maela_rout_sweep_data.csv",header = T, stringsAsFactors = F))
 routine_data <- routine_data[-c(409,800,1112,1396,1531,1629,1636,1818,2036,2214,2410,3072,3086,3273,4490,4673,4718,4921,5066,6386,6388,7592,7837,7950,8324,8488,8550,8566),] # These sequences are duplicates
 
@@ -19,6 +20,7 @@ immunology_data <- immunology_data[-c(10,332,911,929,1142,1757,4103,5678,5680,57
 AMR_data <- dplyr::as_tibble(read.csv("RAW/ARI_AMR_data.csv",header = T, stringsAsFactors = F ))
 AMR_data <- AMR_data[-c(10,4986,4401,819,4481,638,5229,5231,5229),] # These sequences are duplicates
 
+# Performing basic filtering
 seq_data <- dplyr::as_data_frame(read.delim("RAW/sequence_metadata.txt",header=T,stringsAsFactors = F))
 seq_data = mutate(seq_data,specdate=as.Date(seq_data$specdate, "%d-%b-%y"))
 immunology_data = mutate(immunology_data,specdate=as.Date(immunology_data$specdate,"%d/%m/%Y"))
@@ -36,9 +38,9 @@ AMR_data$lane = NA
 
 for(i in 1:dim(seq_data)[1]){
   rout_idx[[i]] = intersect(intersect(which(seq_data$specdate[i] == routine_data$specdate), which(toupper(seq_data$category[i]) == toupper(routine_data$category))),
-                                (which(seq_data$codenum[i]==routine_data$codenum)))
+                                (which(seq_data$codenum[i]==routine_data$codenum))) # routine
   imun_idx[[i]] = intersect(intersect(which(seq_data$specdate[i] == immunology_data$specdate), which(toupper(seq_data$category[i]) == toupper(immunology_data$category))),
-                            (which(seq_data$codenum[i]==immunology_data$codenum)))
+                            (which(seq_data$codenum[i]==immunology_data$codenum))) # immunology
   amr_idx[[i]] = intersect(intersect(intersect(which(seq_data$specdate[i] == AMR_data$specdate), which(toupper(seq_data$category[i]) == toupper(AMR_data$category))),
                            (which(seq_data$codenum[i]==AMR_data$codenum))), which(seq_data$serotype[i] == AMR_data$serotype))
   if(length(amr_idx[[i]]) == 0) amr_no_match = c(amr_no_match, i)
