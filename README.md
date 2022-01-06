@@ -18,6 +18,7 @@ This code is prepared to run on Linux based systems, but should be portable to a
     - First run **pheno_pathGen.R** to generate carriage paths from the raw files (helper functions are available in **fn**)
     - Then run **pheno_carDur.R** to extract carriage episodes with durations
     - Then run **pheno_carCount.R** to extract further details about carriage episodes/counts (optional)
+
 Final outputs will be written to a folder named **Out**, temporary data will be written to **TempData**. 
 - Prepare two text files **cd_isolates** and **mic_isolates**, each containing the subset of isolates linked with each phenotype
 
@@ -29,6 +30,7 @@ Final outputs will be written to a folder named **Out**, temporary data will be 
 - Extract the sequences in **cd_isolates** and **mic_isolates** into separate fasta files (use [seqtk subseq](https://github.com/lh3/seqtk))
 
 For analysis using **R**, it is convenient to convert these MSA fasta files into native **rds** format
+
     - Run **geno_extractSNP.R** to filter, extract SNPs and save the resulting matrix as an RDS file
         - Alternative filtering ethods are available by changing the output folder name
     - Then run **geno_numCodeSNPs.R** to perform allele frequency coding (AFC) on the previously generated R matrices
