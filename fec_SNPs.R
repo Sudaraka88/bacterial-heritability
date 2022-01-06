@@ -1,15 +1,15 @@
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
-# Checked 20210621
+# Checked 20220105
 # Build a least set of SNPs from cef.mic/pen.mic highly associated SNPs to be used as fixed effect covariates in LMM
 # library(treeWAS)
-library(ggplot2)
-library(Rcpp)
+library(ggplot2) # required for plotting
+library(Rcpp) # required for C codes
 getSNP = function(X){
   u = unique(X)
   if(length(u) == 1) return(0) else return(length(u))
   # 0 if no SNP, else # of SNPs returned
 }
-sourceCpp("tableC.cpp")
+sourceCpp("tableC.cpp") # faster version of table()
 filter_alt = function(mxCC){ # This function returns the mx directly
   print("Perform filtering...")
   t_fs = Sys.time()
@@ -41,8 +41,8 @@ bonf_lines = data.frame(intercepts = c(-log10(0.05/ncol(mxCC)), -log10(0.01/ncol
                         gw_bonf = c("0.05","0.01"))
 
 # pen/cef decision
-passoc_gls = readRDS("OUT/cef.mic_passoc_gls_nocov.rds") # cef.mic
-# passoc_gls = readRDS("OUT/passoc_gls_pen.mic.rds") # pen.mic
+passoc_gls = readRDS("OUT/cef.mic_passoc_gls_nocov.rds") # cef.mic - Output from lme4qtl without covariate run
+# passoc_gls = readRDS("OUT/passoc_gls_pen.mic.rds") # pen.mic - Output from lme4qtl without covariate run
 idxes = which(passoc_gls$tab$predictor %in% colnames(mxCC))
 print(paste("Alignment check?", all(passoc_gls$tab$predictor[idxes] == colnames(mxCC))))
 lgpvs = -log10(passoc_gls$tab$pval)[idxes]
@@ -56,11 +56,13 @@ lgpvs = -log10(passoc_gls$tab$pval)[idxes]
 # # Manually, start = 284650, 340532
 gw_sig_idx = which(lgpvs > bonf_lines$intercepts[2])
 x = as.numeric(colnames(mxCC))[gw_sig_idx]
-candidate_x = x[which(x >= 284650 & x <= 340532)]
+candidate_x = x[which(x >= 284650 & x <= 340532)] # This is a known drug resistant region (pbp1a, pbp2b) in S. pneumo
+# perform filtering of pvals
 mxCC_clump = mxCC[,which(as.numeric(colnames(mxCC)) %in% candidate_x)]
 candidate_pvs = lgpvs[which(as.numeric(colnames(mxCC)) %in% candidate_x)]
 names(candidate_pvs) = colnames(mxCC_clump)
 
+# Clumping pipeline
 snporder = order(candidate_pvs, decreasing = T) # snporder[1] is the most important SNP
 keep = snporder[1]
 thresh = 0.25
@@ -84,7 +86,7 @@ cor_ret = cor(mxCC_ret)
 diag(cor_ret) = 0
 print(max(cor_ret))
 
-# The plotting can to be done now if needed
+# The plotting can to be done now if needed - uncomment below for plotter
 
 # covs = rep(0, length(lgpvs))
 # covs[which(colnames(mxCC) %in% colnames(mxCC_ret))] = 1
@@ -136,7 +138,7 @@ print(max(cor_ret))
 #   ggtitle(paste("Pheno: cef.mic, lme4qtl, MI", sep = ""))
 # 
 # plt.mic
-saveRDS(mxCC_ret, "FECs_cef.mic.rds")
+saveRDS(mxCC_ret, "FECs_cef.mic.rds") # Save output file
 # saveRDS(mxCC_ret, "FECs_pen.mic.rds")
 
 

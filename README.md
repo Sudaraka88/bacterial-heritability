@@ -3,6 +3,11 @@
 
 ![Circos](/figures/circ.png)
 
+## How to run
+### Preparing the fasta multiple sequence alignment (MSA)
+- Download the genetic data in **Accession_lane.csv** (use [sratoolkit](https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit))
+- Download and setup [snippy](https://github.com/tseemann/snippy)
+
 ## File description
 ### Accession Lanes
 - Accession_lanes.csv   - Genotype data
@@ -69,4 +74,3 @@
 ### figures
 All paper figures in high quality format
 
-## Instructions on how to run

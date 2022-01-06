@@ -1,14 +1,14 @@
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
-# Checked 20210621
-
+# Checked 20220105
+library(Rcpp) # required for C code interfacing
 # This code is used to extract SNPs from fasta files
-fasta_ = "cd_isolates"; pheno = readRDS("pheno_cd.rds")
-fasta_ = "mic_isolates"; pheno = readRDS("pheno_mic.rds")
-fasta = paste(fasta_,".fasta",sep = "")
+fasta_ = "cd_isolates"; pheno = readRDS("pheno_cd.rds") # fasta alignment and phenotype not provided
+fasta_ = "mic_isolates"; pheno = readRDS("pheno_mic.rds") # fasta alignment and phenotype not provided
+fasta = paste(fasta_,".fasta",sep = "") 
 
-folder = "Method2"
+folder = "Method2" # path to output folder
 
-view_filt_hist = function(freq_table_filt){
+view_filt_hist = function(freq_table_filt){ # quickly view the ACGTN distribution by parsing the filtered freq_table
   par(mfrow = c(2,3))
   hist(freq_table_filt$A)
   hist(freq_table_filt$C)
@@ -19,23 +19,24 @@ view_filt_hist = function(freq_table_filt){
 }
 
 # generate the frq file if not there already
-if(!file.exists(paste(fasta,".frq",sep=""))) system(paste("sh createFreqFile.sh", fasta))
-freq_dat = read.table(paste(fasta,".frq",sep=""), header = FALSE, fill = TRUE, col.names = c("CHR", "POS", "N_ALL", "N_CHR", "A1", "A2", "A3", "A4", "A5"), stringsAsFactors = FALSE)
+if(!file.exists(paste(fasta,".frq",sep=""))) system(paste("sh createFreqFile.sh", fasta)) # do not create if exists 
+freq_dat = read.table(paste(fasta,".frq",sep=""), header = FALSE, fill = TRUE, col.names = c("CHR", "POS", "N_ALL", "N_CHR", "A1", "A2", "A3", "A4", "A5"), stringsAsFactors = FALSE) # header format
 # strip unnecessary data and reformat
 freq_dat = freq_dat[-1,]
 freq_dat = freq_dat[,c(-1,-4)]
 freq_dat[,1] = as.numeric(freq_dat[,1])
 freq_dat[,2] = as.numeric(freq_dat[,2])
-rownames(freq_dat) = NULL
+rownames(freq_dat) = NULL 
 
 t_snps = dim(freq_dat)[1] # total number of SNPs
+
 Rcpp::sourceCpp("Rcppf.cpp")
-freq_out = matrix(rep(0, 5*t_snps), nrow = t_snps)
-makeFreqTable2(freq_dat$N_ALL, unname(as.matrix(freq_dat[3:7])), t_snps, freq_out) # Order A, C, G, T, N
+freq_out = matrix(rep(0, 5*t_snps), nrow = t_snps) # update with freq data
+makeFreqTable2(freq_dat$N_ALL, unname(as.matrix(freq_dat[3:7])), t_snps, freq_out) # Order A, C, G, T, N 
 # Save to nice data.frame
 freq_table = data.frame(freq_dat$POS, freq_dat$N_ALL, freq_out)
 names(freq_table) = c("POS", "N_ALL", "A", "C", "G", "T", "N")
-saveRDS(freq_table, paste(fasta_, "_freq_table.rds", sep = ""))
+saveRDS(freq_table, paste(fasta_, "_freq_table.rds", sep = "")) # save freq_table
 
 
 ############################################ SNP FILTERING ################################################################
