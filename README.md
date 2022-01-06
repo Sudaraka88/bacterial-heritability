@@ -3,10 +3,15 @@
 
 ![Circos](/figures/circ.png)
 
-## How to run
+## Guide for running the code
 ### Preparing the fasta multiple sequence alignment (MSA)
 - Download the genetic data in **Accession_lane.csv** (use [sratoolkit](https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit))
 - Download and setup [snippy](https://github.com/tseemann/snippy)
+- Prepare the MSA with the [ATCC700669](https://www.ncbi.nlm.nih.gov/assembly/GCA_000026665.1) reference genome
+
+### Preparing phenotype data
+- Maela swab data from [Chewapreecha et al. 2014](https://www.nature.com/articles/ng.2895) can be obtained from the authours
+    - Use **pheno_AMR.R** to extract 
 
 ## File description
 ### Accession Lanes
