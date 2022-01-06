@@ -4,7 +4,7 @@
 ![Circos](/figures/circ.png)
 
 ## Guide for running the code
-This code is prepared to run on Linux based systems, but should be portable to any OS with minimum effort...
+This code is prepared to run on Linux based systems, but should be portable to any OS with minimum effort. Please refer to **init.R** for details on installing the required packages.
 
 ### Preparing the fasta multiple sequence alignment (MSA)
 - Download the read sequence data in **Accession_lane.csv** (use [sratoolkit](https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit))
@@ -27,12 +27,22 @@ Final outputs will be written to a folder named **Out**, temporary data will be 
     - Use the downloaded read sequence data with and the annotated reference genome to prepare a gene presence/absence CSV file in roary format
 
 ### Partioning and convering fasta genotype data into rds format
-- Extract the sequences in **cd_isolates** and **mic_isolates** into separate fasta files (use [seqtk subseq](https://github.com/lh3/seqtk))
+- Extract the sequences in **cd_isolates** and **mic_isolates** into separate fasta files (can use [seqtk subseq](https://github.com/lh3/seqtk))
 
 For analysis using **R**, it is convenient to convert these MSA fasta files into native **rds** format
-    - Run **geno_extractSNP.R** to filter, extract SNPs and save the resulting matrix as an RDS file
+    - Run **geno_extractSNP.R** to filter, extract SNPs and save the resulting matrix
         - Alternative filtering ethods are available by changing the output folder name
     - Then run **geno_numCodeSNPs.R** to perform allele frequency coding (AFC) on the previously generated R matrices
+    - For pangenome analysis (optional), use **geno_getAccGenDat.R** to prepare gene count matrix
+
+### Phylogeny and Clustering
+- Install and setup [iqtree](http://www.iqtree.org/doc/Quickstart)
+- Install and setup [fastbaps](https://github.com/gtonkinhill/fastbaps)
+- Install and setup [ClonalFrameML] (https://github.com/xavierdidelot/ClonalFrameML)
+
+To generate the phylogeny from the fasta MSA, use **build_trees.sh**. It will also perform the ClonalFrameML inference of bacterial microevolution recommended for **treeWAS**
+
+- Run **fastbaps_clusts.R** to perform Bayesian population clustering of paritioned MSA fasta files using the baps algorithm
 
 ## File description
 ### Accession Lanes
