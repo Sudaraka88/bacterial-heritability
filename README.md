@@ -27,6 +27,7 @@ Final outputs will be written to a folder named **Out**, temporary data will be 
 
 ### Partioning and convering fasta genotype data into rds format
 - Extract the sequences in **cd_isolates** and **mic_isolates** into separate fasta files (use [seqtk subseq](https://github.com/lh3/seqtk))
+
 For analysis using **R**, it is convenient to convert these MSA fasta files into native **rds** format
     - Run **geno_extractSNP.R** to filter, extract SNPs and save the resulting matrix as an RDS file
         - Alternative filtering ethods are available by changing the output folder name
