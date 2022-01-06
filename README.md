@@ -69,4 +69,4 @@
 ### figures
 All paper figures in high quality format
 
-
+## Instructions on how to run

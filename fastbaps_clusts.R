@@ -1,5 +1,5 @@
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
-# Checked 20210621
+# Checked 20220105
 library(fastbaps)
 
 makefastbapsclust = function(fasta.file.name){
