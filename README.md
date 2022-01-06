@@ -3,7 +3,7 @@
 
 ![Circos](/figures/circ.png)
 
-## Guide for running the code
+## Setting up required packages and files
 This code is prepared to run on Linux based systems, but should be portable to any OS with minimum effort. Please refer to **init.R** for details on installing the required packages.
 
 ### Preparing the fasta multiple sequence alignment (MSA)
@@ -42,7 +42,18 @@ For analysis using **R**, it is convenient to convert these MSA fasta files into
 
 To generate the phylogeny from the fasta MSA, use **build_trees.sh**. It will also perform the ClonalFrameML inference of bacterial microevolution recommended for **treeWAS**
 
-- Run **fastbaps_clusts.R** to perform Bayesian population clustering of paritioned MSA fasta files using the baps algorithm
+- Run **fastbaps_clusts.R** to perform Bayesian population clustering of isolates in the paritioned MSA fasta files using the baps algorithm
+
+
+## Genome-wide association analysis
+### Perform gap/snp testing
+
+
+### Perform major allele testing
+
+## Heritability analysis
+
+## Phenotype prediction
 
 ## File description
 ### Accession Lanes
@@ -71,10 +82,10 @@ To generate the phylogeny from the fasta MSA, use **build_trees.sh**. It will al
 - **fn** 				- Contains helper functions for phenotype preparation
 
 ### Analysis
-- gls_GWAS.R			- Perform GWAS on all phenotypes (num-coded)
-- ldsc_h2.R 			- Estimate heritability using LDSC model (num-coded)
-- PRED_enet.R			- Predict phenotype with elastic net model (num-coded)
-- PRED_MLR.R			- Predict phenotype with linear regression (num-coded) - less accurate
+- gls_GWAS.R			- Perform GWAS on all phenotypes (AFC)
+- ldsc_h2.R 			- Estimate heritability using LDSC model (AFC)
+- PRED_enet.R			- Predict phenotype with elastic net model (AFC)
+- PRED_MLR.R			- Predict phenotype with linear regression (AFC) - less accurate
 - fec_SNPs.R			- Isolate large effect sized SNPs using clumping
 - summarise_preds.R		- Summarise prediction outcomes
 - map2gene.R			- Search for identified gene in the ref. Genome

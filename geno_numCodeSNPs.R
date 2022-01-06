@@ -1,6 +1,6 @@
 # This code onverts a categorically coded {A,C,G,T,N} SNP to the numerically coded version
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
-# Checked 20210621
+# Checked 20220105
 library(Rcpp)
 
 # Switch datasets here

@@ -1,6 +1,6 @@
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
 # Get Accessory Genome Data, along with aligned phenotype files
-# Checked 20210621
+# Checked 20220105
 
 library(data.table)
 library(stringr)
