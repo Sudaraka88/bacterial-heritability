@@ -1,6 +1,6 @@
-# This file creates the covariate information required for pySEER
+# This file creates the covariate information required for pySEER (formatting as required)
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
-# Checked 20210621
+# Checked 20220105
 
 refmt = function(nm){
   temp = unlist(strsplit(unlist(strsplit(nm, split = "_S_"))[1], split = "_"))

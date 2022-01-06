@@ -1,6 +1,6 @@
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
 # This code computes mae and r2 for pyseer predictions
-# Checked 20210621
+# Checked 20210105
 
 viewop = function(input, nm = "out") {
   print(paste(nm, ": ", round(mean(input),3), " (", round(sd(input),3), "), max:", max(input), ", min:", min(input), sep = ""))

@@ -1,6 +1,6 @@
 # Break pheno in to train/test sets for xfcv and loso
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
-# Checked 20210621
+# Checked 20220105
 
 write_pheno = function(samples, y, testing_idx, ph_nm, fldr){
   n = length(testing_idx_)
@@ -17,6 +17,7 @@ write_pheno = function(samples, y, testing_idx, ph_nm, fldr){
 
 ph_ = c("cd", "cef.mic", "pen.mic")
 for(ph in ph_){
+  # get phenotype
   if(ph == "cd"){
     pheno = readRDS("cd_pheno.rds")
     pheno_vals = log10(pheno$carriage_duration)
@@ -28,7 +29,7 @@ for(ph in ph_){
   pheno$sampleID = gsub("#", "_", pheno$sampleID) # pyseer requirement
   
   print("Commencing xfcv")
-  set.seed(23)
+  set.seed(23) # hard code seed for reproducibility
   tp = 0.1
   x = 1
   y = round(nrow(pheno)*tp)
@@ -45,7 +46,7 @@ for(ph in ph_){
   write_pheno(samples = pheno$sampleID, y = pheno_vals, testing_idx = testing_idx_, ph_nm = ph, fldr = "XFCV")
   
   print("Commencing loso")
-  clusts = sort(unique(pheno$cluster))
+  clusts = sort(unique(pheno$cluster)) # Fastbaps clusters should be provided (saved to pheno for convenience)
   print(paste("Identified", length(clusts), "Clusters"))
   testing_idx_ = list()
   idx = 1
@@ -55,7 +56,4 @@ for(ph in ph_){
   }
   print(paste("Check for correct training/testing sets passed?", all(sort(unlist(testing_idx_)) == seq(1:nrow(pheno)))))
   write_pheno(samples = pheno$sampleID, y = pheno_vals, testing_idx = testing_idx_, ph_nm = ph, fldr = "LOSO")
-  
-  
-  
 }

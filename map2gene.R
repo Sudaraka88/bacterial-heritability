@@ -1,5 +1,5 @@
 library(data.table)
-# Checked 20210621
+# Checked 20220105
 
 # reference_genome.rds is a reduced version of the SPN23F ref. genome published here: https://journals.asm.org/doi/full/10.1128/JB.01343-08
 # The gff file is available at: https://dx.doi.org/10.6084/m9.figshare.7588832 (via pyseer: https://pyseer.readthedocs.io/en/master/tutorial.html)

@@ -1,8 +1,10 @@
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
 library(survcomp)
 library(ggplot2)
+# Checked 20220105
 # Attempt to combine z-scores and get a single MHP
 source("map2gene.R")
+# Simple function to map associated sites with genes in the refererence
 gene_mapper = function(x){
   gene_list = c()
   snp_list = c()
@@ -30,10 +32,10 @@ gene_mapper = function(x){
   # print(noquote(paste0(gene_summary$gene, ",", sep = "", collapse = NULL)))
   return(gene_summary)
 }
-usecombi = F
-noplots = F
+usecombi = F # Combine test statistics using Stouffer's method? (Else take max)
+noplots = F # Generate plots in this run?
 ph_ = c("cef.mic", "pen.mic")
-test = "permi"
+test = "permi" # Use permutation based thresholds 
 
 for(ph in ph_){
   if(ph=="cd") { pheno = pheno = readRDS("pheno_cd_uqepi_last.rds") 
@@ -72,12 +74,12 @@ for(ph in ph_){
   if(usecombi){
     gwas_full = data.frame(pos = gap_out$pos[combi_idx], z = (gap_out$z[combi_idx] + snp_out$z[combi[combi_idx]])/sqrt(2),
                            p = apply(cbind(gap_out$p[combi_idx], snp_out$p[combi[combi_idx]]), MARGIN = 1, function(x) survcomp::combine.test(p = x,method = "z.transform")),
-                           gf = gap_out$gf[combi_idx], Test = rep("combi", length(which(combi_idx))))
+                           gf = gap_out$gf[combi_idx], Test = rep("combi", length(which(combi_idx)))) # Stouffer's method
   } else {
     gwas_full = data.frame(pos = gap_out$pos[combi_idx], z = (gap_out$z[combi_idx] + snp_out$z[combi[combi_idx]])/sqrt(2),
                            p = apply(cbind(gap_out$p[combi_idx], snp_out$p[combi[combi_idx]]), 1, min),
                            gf = gap_out$gf[combi_idx], 
-                           Test = apply(cbind(gap_out$p[combi_idx], snp_out$p[combi[combi_idx]]), 1, function(x) ifelse(x[1] >= x[2], 'gap', 'snp')))
+                           Test = apply(cbind(gap_out$p[combi_idx], snp_out$p[combi[combi_idx]]), 1, function(x) ifelse(x[1] >= x[2], 'gap', 'snp'))) # Max
   }
   
   
@@ -112,7 +114,7 @@ for(ph in ph_){
                             slopes = c(0,0),
                             FWER = c("0.05","0.01"))
   } else if(test == "permi"){
-    test_lines = data.frame(intercepts = c(6.194522, 6.803505),
+    test_lines = data.frame(intercepts = c(6.194522, 6.803505), # permutation thresholds are hard coded from the analysis
                             slopes = c(0,0),
                             FWER = c("0.05","0.01"))
   }
@@ -133,7 +135,7 @@ for(ph in ph_){
   saveRDS(plt_dat, file = paste("OUT/", ph, "_combi_plt.rds", sep = ""))
   saveRDS(gwas_full, file = paste("OUT/", ph, "_combi_gwas.rds", sep = ""))
  
-  if(!noplots){
+  if(!noplots){ # Avoiding plots saves computation time
     plt = ggplot() + geom_point(data = plt_dat_strong, aes(x = pos, y = p, col = Gap_frq, shape = Test), size = 4) +
       geom_point(data = plt_dat_weak, aes(x = pos, y = p, shape = Test), size = 4, col = "black") +
       ylim(ymin, ymax) +

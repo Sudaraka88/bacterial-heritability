@@ -1,6 +1,6 @@
 # This code is to summarise prediction results for each phenotype
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
-# Checked 20210621
+# Checked 20220105
 
 library(ggplot2)
 rm(list=ls())
@@ -65,7 +65,7 @@ for(ph in ph_){
   }
 }
 #############################################################################################################################################################
-# # For LM method
+# # For MLR method (not recommended)
 ############################################################################################################################################################# 
 ph = "pen.mic"
 method = "loso"

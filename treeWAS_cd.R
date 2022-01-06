@@ -1,5 +1,8 @@
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
-# Checked 20210621
+# Checked 20220105
+# Refer to the treeWAS paper (https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005958) for pipeline information
+# treeWAS::treeWAS() failed for our dataset (possibly too large), therefore, we recreated the following pipeline by examining the code hosted at https://github.com/caitiecollins/treeWAS
+# Since these are mostly derived code from GitHub, please refer to the original source for better explanations
 
 ph = "cd"
 
@@ -20,9 +23,9 @@ refmt = function(nm){
 
 print("Loading files...")
 
-############ Deal with the genotype first ###########
-# snp_pos = readRDS("pos.rds") # not provided 
-# genotype = readRDS("mapped_mx_CC.rds") # not provided
+############ Deal with the genotype first ########### uncomment and run first ########
+# snp_pos = readRDS("pos.rds") # not provided - can be generated with provided code
+# genotype = readRDS("mapped_mx_CC.rds") # not provided - can be generated with provided code
 # snps.unique = get.unique.matrix(genotype, MARGIN = 2)$unique.data # These are now unique SNPs
 # MA = apply(genotype, 2, function(x) names(sort(table(x), decreasing = T)[1]))
 # genotype_bc = matrix(nrow = nrow(genotype), ncol = ncol(genotype), data = 0)
@@ -37,7 +40,7 @@ print("Loaded SNPs: snps.unique_cd.rd")
 nSEQs = dim(snps.unique)[1]
 nSNPs = dim(snps.unique)[2]
 
-pheno = readRDS("mapped_pheno_Wclust.rds")
+pheno = readRDS("mapped_pheno_Wclust.rds") 
 if(ph == "cd") phenotype = log10(pheno$carriage_duration) # Load CD pheno
 
 names(phenotype) = pheno$sampleID
@@ -45,7 +48,7 @@ print("Loaded Phenotype")
 str(phenotype)
 
 
-maela_tree = read.tree("Trees/cfrm_cd.labelled_tree.newick")
+maela_tree = read.tree("Trees/cfrm_cd.labelled_tree.newick") # ClonalFrameML tree recommended for S. pneumo
 print("Loaded tree")
 
 maela_tree$tip.label = unname(sapply(maela_tree$tip.label, function(x) refmt(x)))
@@ -58,6 +61,7 @@ if(length(toChange) > 0){
 }
 
 str(maela_tree)
+
 
 #####################################################################
 ##################### RECONSTRUCTION ################################

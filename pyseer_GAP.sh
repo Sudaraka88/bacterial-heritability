@@ -1,5 +1,5 @@
 #!/bin/bash
-# conda must be active to run this
+# conda must be active to run this (if installed via conda)
 
 pheno="cd"
 SNPS="gap_cd.vcf"

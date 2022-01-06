@@ -1,5 +1,9 @@
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
-# Checked 20210621
+# Checked 20220105
+# Refer to the treeWAS paper (https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005958) for pipeline information
+# treeWAS::treeWAS() failed for our dataset (possibly too large), therefore, we recreated the following pipeline by examining the code hosted at https://github.com/caitiecollins/treeWAS
+# Since these are mostly derived code from GitHub, please refer to the original source for better explanations
+
 args <- commandArgs(TRUE)
 if(length(args) == 0) {
   print("Either phenotype <cef.mic> OR <pen.mic> must be provided")

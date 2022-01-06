@@ -1,5 +1,5 @@
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
-# Checked 20210621
+# Checked 20220105
 # This code is intended to make a separate phenotype file for mic data
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY

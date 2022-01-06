@@ -38,6 +38,8 @@ gene_mapper = function(x){
   print(noquote(paste0(gene_summary$gene, ",", sep = "", collapse = NULL)))
   return(gene_summary)
 }
+
+# This function generates a formatted GWAS Manhattan plot 
 mkplt_gwas = function(passoc_gls, lab_pos = 0, pheno_type, sim_mx_type, shape_snps = NULL, offset = 2350000, test = "permi"){
   # Increase font size and remove titles for pub 20210527
   # Plotting code

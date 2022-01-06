@@ -1,6 +1,6 @@
 # This file creates the phenotype information required for pySEER
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
-# Checked 20210621
+# Checked 20220105
 
 refmt = function(nm){
   temp = unlist(strsplit(unlist(strsplit(nm, split = "_S_"))[1], split = "_"))

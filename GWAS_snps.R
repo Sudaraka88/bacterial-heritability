@@ -1,5 +1,6 @@
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
-# Try to perform GWAS using 2df analysis
+# Perform SNP testing using lme4qtl
+# Checked 20220105
 library(lme4qtl)
 library(wlm)
 library(Rcpp)
@@ -38,7 +39,7 @@ gene_mapper = function(x){
   print(noquote(paste0(gene_summary$gene, ",", sep = "", collapse = NULL)))
   return(gene_summary)
 }
-mkplt_gwas = function(passoc_gls, lab_pos = 0, pheno_type, sim_mx_type, shape_snps = NULL, offset = 2350000){
+mkplt_gwas = function(passoc_gls, lab_pos = 0, pheno_type, sim_mx_type, shape_snps = NULL, offset = 2350000){ # plotting function (MHP)
   # Increase font size and remove titles for pub 20210527
   # Plotting code
   lgpvs = -log10(passoc_gls$tab$pval)
@@ -160,7 +161,7 @@ rename_simmx = function(nm){
   x = unlist(strsplit(nm,"_"))
   return(paste(x[1],"_",x[2],"#",x[3],sep = ""))
 }
-sim_mx_cleaner = function(sim_mx, pheno_order){
+sim_mx_cleaner = function(sim_mx, pheno_order){ # Function to format phylogenetic similarity mx
   print("Cleaning sim_mx")
   rnms = rownames(sim_mx)
   rnms = unname(sapply(rnms, function(x) rename_simmx(x)))
@@ -175,7 +176,7 @@ sim_mx_cleaner = function(sim_mx, pheno_order){
   return(sim_mx)
  
 }
-gwas_pipeline = function(ph, formi, pheno_data, sim_mx, mxCC){
+gwas_pipeline = function(ph, formi, pheno_data, sim_mx, mxCC){ # pipeline for lme4qtl GWAS (see https://github.com/variani/lme4qtl/blob/master/demo/gwas.R)
   if(ph == "cd") scol = 3 else if(ph == "cef.mic" | ph == "pen.mic") scol = 3 else print("Unknown phenotype")
   print("Performing population structure correction")
   t = Sys.time()
@@ -184,7 +185,7 @@ gwas_pipeline = function(ph, formi, pheno_data, sim_mx, mxCC){
     W = mod_f$W
     rm(mod_f)
   } else {
-    if(ph == "cd"){
+    if(ph == "cd"){ # full LMM
       mod = lme4qtl::relmatLmer(y ~ (1|ids) + (1|hostID), pheno_data, relmat = list(ids = sim_mx))
     } else {
       mod = lme4qtl::relmatLmer(y ~ (1|ids), pheno_data, relmat = list(ids = sim_mx))
@@ -281,7 +282,7 @@ gwas_pipeline = function(ph, formi, pheno_data, sim_mx, mxCC){
     # Sys.time() - t
     out = data.frame(out)
     out = cbind(pos, out)
-    
+    # format and save
     colnames(out) = c("pos", "beta", "se", "p","MAF", "gf", "samples")
     saveRDS(out, paste("OUT/snpgwas_", ph, "_afc.rds", sep = ""))
   } else {
@@ -302,7 +303,7 @@ gwas_pipeline = function(ph, formi, pheno_data, sim_mx, mxCC){
   
   gw_sig_idx = which(plt_dat[,2] > bonf_lines$intercepts[1])
   gene_summary = gene_mapper(as.numeric(plt_dat$pos[gw_sig_idx]))
-  
+  # plotter call
   plt = ggplot(plt_dat) + geom_point(aes(x = pos, y = p, col = gap_freq), shape = 20, size = 1) + ylim(ymin, ymax) + geom_abline(data = bonf_lines, aes(intercept = intercepts, slope = slopes, linetype = Bonf)) +
     scale_x_continuous(breaks = c(0, 500000, 1000000, 1500000, 2000000), name = "Basepair position", labels = scales::comma) +
     ylab(expression("-log"[10]*"(p-value)"))
@@ -311,11 +312,10 @@ gwas_pipeline = function(ph, formi, pheno_data, sim_mx, mxCC){
   
 }
 
-OUTPATH = "OUT"; dir.create(OUTPATH)
+OUTPATH = "OUT"; dir.create(OUTPATH) # Save path
 PLOTPATH = "PLOTS"; dir.create(PLOTPATH)
 
-ph_ = c("cd","cef.mic", "pen.mic") # "cd", "cef.mic" 
-# ph = "cd"
+ph_ = c("cd","cef.mic", "pen.mic") # subset of phenotypes
 for(ph in ph_){
   gc()
   T0 = Sys.time()

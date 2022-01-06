@@ -1,5 +1,5 @@
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
-# Checked 20210621
+# Checked 20220105
 
 # This is a combined run with core and accessory genome data
 library(ggplot2)

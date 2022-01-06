@@ -96,4 +96,14 @@ colnames(dna_seq) = as.character(pos)
 
 saveRDS(dna_seq,file.path(folder, paste(fasta_, "_mx.rds", sep = "")))
 
+# Perform binary coding for major allele testing
+mxBC = matrix(nrow = nrow(dna_seq), ncol = ncol(dna_seq))
+for(i in 1:ncol(dna_seq)){
+  MA = names(sort(tableC(dna_seq[,i]), decreasing = T)[1])
+  mxBC[,i] = as.numeric(dna_seq[,i] == MA)
+}
+colnames(mxBC) = colnames(dna_seq)
+rownames(mxBC) = rownames(dna_seq)
+# saveRDS(mxBC, "pyseer/acc_mic_core_bc.rds")
+saveRDS(mxBC, paste(fasta_, "_mxBC.rds", sep = "")) 
 

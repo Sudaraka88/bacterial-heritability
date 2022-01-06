@@ -1,5 +1,5 @@
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
-# Checked 20210621
+# Checked 20220105
 
 library(lme4qtl)
 library(wlm)
@@ -34,6 +34,7 @@ gene_mapper = function(x){
   print(noquote(paste0(gene_summary$gene, ",", sep = "", collapse = NULL)))
   return(gene_summary)
 }
+# Generate a GWAS Manhattan plot 
 mkplt_gwas = function(passoc_gls, lab_pos = 0, pheno_type, sim_mx_type, shape_snps = NULL, offset = 2350000){
   # Plotting code
   lgpvs = -log10(passoc_gls$tab$pval)
@@ -100,6 +101,7 @@ mkplt_gwas = function(passoc_gls, lab_pos = 0, pheno_type, sim_mx_type, shape_sn
 checkAlignment = function(nm1,nm2){
   print(paste("Pass alignment test?", all(nm1 == nm2)))
 }
+# Drop non-snps and perform basic filtering
 filter_alt = function(mxCC){ # This function returns the mx directly
   print("Perform filtering...")
   t_fs = Sys.time()
@@ -116,6 +118,7 @@ getVariation = function(X){
   if(length(u) == 1) return(0) else return(length(u))
   # 0 if no gene variations, else # of variations returned
 }
+# format formula for lme4qtl
 create_formula = function(pheno_data, type = "nocov"){
   # Return the formula and the data frame for training
   cnms = colnames(pheno_data)
@@ -154,6 +157,7 @@ rename_simmx = function(nm){
   x = unlist(strsplit(nm,"_"))
   return(paste(x[1],"_",x[2],"#",x[3],sep = ""))
 }
+# rename and arrange the phylo_sim matrix
 sim_mx_cleaner = function(sim_mx, pheno_order){
   print("Cleaning sim_mx")
   rnms = rownames(sim_mx)
@@ -177,6 +181,7 @@ sim_mx_cleaner = function(sim_mx, pheno_order){
   # colnames(temp) = colnames(sim_mx)
   # return(temp)
 }
+# perform GWAS
 gwas_pipeline = function(path, formi = NULL, pheno_data = NULL, sim_mx = NULL, mxCC = NULL, overwrite = FALSE, W = NULL){
   if(file.exists(path) && !overwrite){
     print("Loading saved model")
@@ -187,7 +192,7 @@ gwas_pipeline = function(path, formi = NULL, pheno_data = NULL, sim_mx = NULL, m
     if(is.null(W)){
       print("Performing population structure correction")
       t = Sys.time()
-      mod = lme4qtl::relmatLmer(y ~ (1|ids), pheno_data, relmat = list(ids = sim_mx))
+      mod = lme4qtl::relmatLmer(y ~ (1|ids), pheno_data, relmat = list(ids = sim_mx)) # Full model
       print(lme4qtl::VarProp(mod))
       V <- lme4qtl::varcov(mod, idvar = "ids")
       decomp <- wlm::decompose_varcov(V, method = "evd", output = "all")
@@ -195,16 +200,16 @@ gwas_pipeline = function(path, formi = NULL, pheno_data = NULL, sim_mx = NULL, m
       print(paste("Completed: elapsed", Sys.time() - t))
     } 
     print("Population structure matrix provided")
-    passoc_gls <- matlm::matlm(formi, pheno_data, pred = mxCC, ids = ids, transform = W, batch_size = 1000, verbose = 2)
-    saveRDS(passoc_gls, path)
+    passoc_gls <- matlm::matlm(formi, pheno_data, pred = mxCC, ids = ids, transform = W, batch_size = 1000, verbose = 2) # Approximate linear model
+    saveRDS(passoc_gls, path) # save output 
   }
   return(list(W = W, passoc_gls = passoc_gls))
 }
 
-OUTPATH = "OUT"; dir.create(OUTPATH)
-PLOTPATH = "PLOTS"; dir.create(PLOTPATH)
+OUTPATH = "OUT"; dir.create(OUTPATH) # outputs will be saved to OUT
+PLOTPATH = "PLOTS"; dir.create(PLOTPATH) # plots will be saved to PLOTS
 
-ph_ = c("cd","cef.mic","pen.mic")
+ph_ = c("cd","cef.mic","pen.mic") # subset of phenotypes to analyse
 # ph = "pen.mic"
 for(ph in ph_){
   T0 = Sys.time()
@@ -227,7 +232,7 @@ for(ph in ph_){
     mxCC = filter_alt(mxCC)
     # Let's make the phenotype table
     pheno_data = data.frame(ids = pheno$sampleID, y = log10(pheno$carriage_duration), carried = pheno$carried)
-    formi = create_formula(pheno_data[,-1])$formi
+    formi = create_formula(pheno_data[,-1])$formi # create formula compatible with lme4qtl
     
     print("Reading similarity mx: phylosim_cdacute.tsv")
     sim_mx = read.table("phylosim_cdacute.tsv") # These row names/col names need to be modified
@@ -252,7 +257,7 @@ for(ph in ph_){
       colnames(fec_cv) = paste("f_", colnames(fec_cv), sep = "")
       pheno_data = data.frame(ids = pheno$sampleID, y = log10(pheno$Ceftriaxone.MIC), acute = as.numeric(pheno$acute=="No"), 
                               cat = as.numeric(pheno$category=="Infant"), fec_cv) 
-      lab_pos = list(nocov = c(-2,-6,-10,-14,-18,-2,-6,-10,-14,-2,-2,-2),
+      lab_pos = list(nocov = c(-2,-6,-10,-14,-18,-2,-6,-10,-14,-2,-2,-2), # arbitrary positions for identified Gene labels
                      fecov = c(-2,-2, -2))
     } else if(ph == "pen.mic") {
       fec_cv = readRDS("FECs_pen.mic.rds")

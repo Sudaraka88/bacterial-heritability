@@ -1,13 +1,13 @@
 # see: https://www.mv.helsinki.fi/home/mjxpirin/GWAS_course/material/GWAS2.html for a description of GWAS statistics
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
-# Checked 20210621
+# Checked 20220105
 
 library(foreach)
 library(doParallel)
 library(ggplot2)
 library(gridExtra)
 
-acc_gene_cleaner = function(acc_genes){
+acc_gene_cleaner = function(acc_genes){ # Clean up the accessory genome when used
   # 95% rule
   gv = apply(acc_genes, 2, getVariation) # These show no variation
   acc_genes = acc_genes[,-which(gv == 0)]
@@ -16,13 +16,13 @@ acc_gene_cleaner = function(acc_genes){
   acc_genes = apply(acc_genes, 2, function(x) x - mean(x)) # normalise
   return(unique.matrix(acc_genes))
 }
-getVariation = function(X){
+getVariation = function(X){ # SNP confirmation
   u = unique(X)
   if(length(u) == 1) return(0) else return(length(u))
   # 0 if no SNP, else # of SNPs returned
 }
 # LDSC model output viewer
-view_op = function(ph, ldsc, df, M, N, nbin = 0, alpha_ = 0.75){
+view_op = function(ph, ldsc, df, M, N, nbin = 0, alpha_ = 0.75){ # Plot generation function
   # Prepare function for pub 20210527
   df = df[order(df$LDscrs),] 
   if(nbin > 0){

@@ -1,7 +1,7 @@
 if(rstudioapi::isAvailable()) setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # WORKING DIRECTORY
-# Checked 20210621
+# Checked 20220105
 
-# This is a combined run with core and accessory genome data 20210430
+# This is for a combined run with core and accessory genome data 20210430
 library(ggplot2)
 library(lme4qtl)
 library(wlm)
@@ -12,7 +12,7 @@ library(glmnet)
 library(doParallel)
 sourceCpp("tableC.cpp")
 validation_method_ = c("loso", "xfcv")
-ph_ = c("cd","pen.mic", "cef.mic")
+ph_ = c("cd","pen.mic", "cef.mic") # subset of phenotypes
 getVariation = function(X){
   u = unique(X)
   if(length(u) == 1) return(0) else return(length(u))
@@ -39,7 +39,7 @@ filter_alt = function(mxCC){ # This function returns the mx directly
   print(paste("Filtering time:" , Sys.time() - t_fs))
   return(uqmx)
 }
-gwas_pipeline = function(path, formi = NULL, pheno_data = NULL, sim_mx = NULL, mxCC = NULL, overwrite = FALSE, W = NULL){
+gwas_pipeline = function(path, formi = NULL, pheno_data = NULL, sim_mx = NULL, mxCC = NULL, overwrite = FALSE, W = NULL){ # lme4qtl based gwas pipeline (see https://github.com/variani/lme4qtl/blob/master/demo/gwas.R)
   if(file.exists(path) && !overwrite){
     print("Loading saved model")
     passoc_gls = readRDS(path)
@@ -87,7 +87,7 @@ create_formula = function(pheno_data, type = "nocov"){
     return(list(formi = DF2formula(pheno_data), pheno_data = pheno_data))
   }
 }
-sim_mx_cleaner = function(sim_mx, pheno_order){
+sim_mx_cleaner = function(sim_mx, pheno_order){ # Format the phylogenetic similarity matrix
   print("Cleaning sim_mx")
   rnms = rownames(sim_mx)
   rnms = unname(sapply(rnms, function(x) rename_simmx(x)))
@@ -107,7 +107,7 @@ rename_simmx = function(nm){
 checkAlignment = function(nm1,nm2){
   print(paste("Pass alignment test?", all(nm1 == nm2)))
 }
-subset_snps = function(passoc_gls, mxCC, cor_thresh = 0.5, retain_thresh = 0.75){
+subset_snps = function(passoc_gls, mxCC, cor_thresh = 0.5, retain_thresh = 0.75){ # Drop the bottom 25% of SNPs
   t = Sys.time()
   print(paste("Initiating clumping pipeline at", t))
   # Let's clump and select a set of SNPs based on p-value order
@@ -184,11 +184,11 @@ for(ph in ph_){
         pheno_data = data.frame(ids = pheno$sampleID, y = log10(pheno$Penicillin.MIC), acute = as.numeric(pheno$acute=="No"), 
                                 cat = as.numeric(pheno$category=="Infant"))
       }
-
+      
       print("Reading similarity mx: phylosim_mic.tsv")
       sim_mx = read.table("phylosim_mic.tsv") # These row names/col names need to be modified
     }
-  
+    
     outpath = "OUT"; if(!file.exists(outpath)) dir.create(outpath) # Outputs
     
     if(file.exists(file.path("OUT", paste(ph, "_passoc_gls.rds", sep = "")))){
@@ -243,22 +243,22 @@ for(ph in ph_){
       }
     }
     print(paste("Check for correct training/testing sets passed?", all(sort(unlist(testing_idx_)) == seq(1:nrow(pheno)))))
-
+    
     xxx = 1 # counter
     op = list()
     for(testing_idx in testing_idx_){
       t_val_step = Sys.time()
       print(paste("Working on step", xxx))
-
+      
       tp = length(testing_idx)/nrow(pheno)
       training_idx = seq(1, nrow(pheno))
-
+      
       training_idx = training_idx[-testing_idx]
-     
+      
       # We should do a re-filtering of the training SNPs, we can't predict using unseen data!
       mxCC_train = mxCC[training_idx,keep_idx]
       
-   
+      
       pheno_data_train = pheno_data[training_idx, ]
       pheno_data_test = pheno_data[testing_idx, ]
       # 10 fold CV using glmnet
@@ -275,11 +275,12 @@ for(ph in ph_){
         saveRDS(save_op, file.path(outpath, paste(ph, "_", validation_method, "_a_",alpha, "_enet_", xxx, sep = "")))
         print(paste(validation_method,"step=", xxx,"for ph",ph,", alpha=",alpha,"mse=",save_op$mse,"cor=",save_op$cor,"N=",save_op$N))
         rm(glmnet_cv)
-
-      xxx = xxx + 1
-      print(paste("Elapsed time for step:", Sys.time() - t_val_step))
+        
+        xxx = xxx + 1
+        print(paste("Elapsed time for step:", Sys.time() - t_val_step))
+      }
+      print(paste("Elapsed time for validation:", Sys.time() - t_val))
     }
-    print(paste("Elapsed time for validation:", Sys.time() - t_val))
+    print(paste("Elapsed time for phenotype:", Sys.time() - t_ph))
   }
-  print(paste("Elapsed time for phenotype:", Sys.time() - t_ph))
 }
