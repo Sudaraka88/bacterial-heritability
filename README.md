@@ -41,7 +41,7 @@ For analysis using **R**, it is convenient to convert these MSA fasta files into
 ### Phylogeny and Clustering
 - Install and setup [iqtree](http://www.iqtree.org/doc/Quickstart)
 - Install and setup [fastbaps](https://github.com/gtonkinhill/fastbaps)
-- Install and setup [ClonalFrameML] (https://github.com/xavierdidelot/ClonalFrameML)
+- Install and setup [ClonalFrameML](https://github.com/xavierdidelot/ClonalFrameML)
 
 To generate the phylogeny from the fasta MSA, use **build_trees.sh**. It will also perform the ClonalFrameML inference of bacterial microevolution recommended for [treeWAS](https://github.com/caitiecollins/treeWAS)
 
