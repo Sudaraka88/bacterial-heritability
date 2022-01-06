@@ -4,6 +4,7 @@ list.of.packages <- c("ggplot2", "Rcpp", "gridExtra", "data.table", "foreach",
                       "phytools", "DECIPHER", "dplyr", "colorspace", "ggpubr", 
                       "ape", "vcfR", "stringr", "msm", "minqa", "zoo")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+
 if(length(new.packages)) install.packages(new.packages)
 
 ################## These packages are required from github #####################
